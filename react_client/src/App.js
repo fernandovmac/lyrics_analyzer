@@ -35,7 +35,7 @@ class App extends Component {
     this.state = {
       inputArtist: "",
       inputSong: "",
-      lyrics: ""
+      words: []
     };
     this.handleClick = this.handleClick.bind(this);
     this.updateInputArtist = this.updateInputArtist.bind(this);
@@ -50,11 +50,29 @@ class App extends Component {
           "&song_title=" +
           this.state.inputSong
       )
-      .then(response => this.setState({ lyrics: response.data.artist }));
+      .then(response =>
+        this.setState({ words: response.data.analysed_lyrics })
+      );
+
     console.log(React.version);
     // .then(response => console.log(response));
-    // console.log("success!", response);
+    console.log("success!", this.state.words);
   }
+
+  // handleClick() {
+  //   fetch(
+  //     "http://0.0.0.0:5000/getquery?artist=" +
+  //       this.state.inputArtist +
+  //       "&song_title=" +
+  //       this.state.inputSong
+  //   )
+  //     .then(response => response.json())
+  //     .then(({ results: data.ana }) => this.setState({ words }));
+
+  //   console.log(React.version);
+  //   // .then(response => console.log(response));
+  //   console.log("success!", this.state.words);
+  // }
 
   updateInputArtist(event) {
     this.setState({ inputArtist: event.target.value });
@@ -66,6 +84,7 @@ class App extends Component {
 
   state = {};
   render() {
+    let words = this.state.words;
     return (
       <div className="button_container">
         <p>My Token = {window.token}</p>
@@ -104,7 +123,15 @@ class App extends Component {
         <h2>
           Song: <span class="badge badge-dark">{this.state.inputSong}</span>
         </h2>
-        <p className="response">{this.state.lyrics}</p>
+        <div className="wrapper">
+          {Object.keys(words).map(word => (
+            <div className="results" key={word}>
+              <span>{word}</span>
+              <span> : </span>
+              <span>{words[word]}</span>
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
